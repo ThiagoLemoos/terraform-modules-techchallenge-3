@@ -1,14 +1,9 @@
-output "documentdb_cluster_endpoint" {
-  description = "DocumentDB cluster endpoint"
-  value = aws_docdb_cluster.docdb_cluster.endpoint
+output "rds_instance_endpoint" {
+  description = "RDS instance endpoint"
+  value = module.db.db_instance_endpoint
 }
 
-output "documentdb_cluster_id" {
-  description = "DocumentDB cluster ID"
-  value = aws_docdb_cluster.docdb_cluster.id
-}
-
-output "documentdb_cluster_members" {
-  description = "DocumentDB cluster members"
-  value = aws_docdb_cluster.docdb_cluster.cluster_members
+output "rds_instance_id" {
+  description = "RDS instance ID"
+  value = module.db.db_instance_id
 }

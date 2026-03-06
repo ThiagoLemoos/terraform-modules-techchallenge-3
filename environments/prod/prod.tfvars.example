@@ -1,0 +1,81 @@
+# Variáveis principais do projeto
+aws_region   = "us-east-1"
+project_name = "techchallenge3"
+cidr_block   = "10.0.0.0/16"
+
+# Variáveis do RDS
+identifier = "techchallenge3"
+engine     = "mysql"
+engine_version = "8.0"
+instance_class = "db.t3a.large"
+allocated_storage = 20
+
+db_name  = "techchallenge3"
+username = "admin"
+port     = "3306"
+
+# Configurações de segurança e autenticação
+iam_database_authentication_enabled = true
+vpc_security_group_ids = []  # Será preenchido automaticamente pelo módulo VPC
+
+# Janelas de manutenção e backup
+maintenance_window = "Mon:00:00-Mon:03:00"
+backup_window      = "03:00-06:00"
+
+# Configurações de monitoring
+monitoring_interval    = "30"
+monitoring_role_name   = "techchallenge3Role"
+create_monitoring_role = true
+
+# Configurações de subnet
+create_db_subnet_group = true
+subnet_ids = []  # Será preenchido automaticamente pelo módulo VPC
+
+# Configurações de parâmetros e options
+family = "mysql8.0"
+major_engine_version = "8.0"
+
+# Proteção contra deleção
+deletion_protection = true
+
+# Parâmetros do MySQL
+parameters = [
+  {
+    name  = "character_set_client"
+    value = "utf8mb4"
+  },
+  {
+    name  = "character_set_server"
+    value = "utf8mb4"
+  },
+  {
+    name  = "collation_server"
+    value = "utf8mb4_unicode_ci"
+  }
+]
+
+# Options do RDS
+options = [
+  {
+    option_name = "MARIADB_AUDIT_PLUGIN"
+    option_settings = [
+      {
+        name  = "SERVER_AUDIT_EVENTS"
+        value = "CONNECT"
+      },
+      {
+        name  = "SERVER_AUDIT_FILE_ROTATIONS"
+        value = "37"
+      }
+    ]
+  }
+]
+
+# Tags para todos os recursos
+tags = {
+  team       = "Devops"
+  project    = "env-techchallenge"
+  environment = "Prod"
+  managedBy  = "Terraform"
+  Name       = "techchallenge-rds"
+}

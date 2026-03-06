@@ -10,83 +10,146 @@ variable "aws_region" {
 }
 
 variable "tags" {
-  description = "Tags for the DocumentDB cluster"
+  description = "Tags for the RDS instance"
   type        = map(string)
   default = {}
 }
 
-variable "aws_docdb_name" {
-  description = "Name for the DocumentDB cluster"
+# Variáveis do RDS
+variable "identifier" {
+  description = "RDS instance identifier"
   type        = string
 }
 
-variable "aws_docdb_description" {
-  description = "Description for the DocumentDB cluster"
+variable "engine" {
+  description = "Database engine"
   type        = string
+  default     = "mysql"
 }
 
-variable "aws_docdb_subnet_ids" {
-  description = "List of VPC subnet IDs for DocumentDB deployment"
-  type        = list(string)
-}
-
-variable "aws_docdb_cluster_identifier" {
-  description = "Identifier for the DocumentDB cluster"
+variable "engine_version" {
+  description = "Database engine version"
   type        = string
+  default     = "8.0"
 }
 
-variable "aws_docdb_engine" {
-  description = "Engine for the DocumentDB cluster"
+variable "instance_class" {
+  description = "RDS instance class"
   type        = string
+  default     = "db.t3a.large"
 }
 
-variable "aws_docdb_engine_version" {
-  description = "Engine version for the DocumentDB cluster"
-  type        = string
-}
-
-variable "aws_docdb_db_username" {
-  description = "Username for the DocumentDB cluster"
-  type        = string
-}
-
-variable "aws_docdb_db_password" {
-  description = "Password for the DocumentDB cluster"
-  type        = string
-  sensitive   = true
-}
-
-variable "aws_docdb_count_instances" {
-  description = "Number of instances for the DocumentDB cluster"
+variable "allocated_storage" {
+  description = "Allocated storage in GB"
   type        = number
+  default     = 20
 }
 
-variable "aws_docdb_instance_class" {
-  description = "Instance class for the DocumentDB cluster"
+variable "db_name" {
+  description = "Database name"
   type        = string
 }
 
-variable "aws_docdb_skip_final_snapshot" {
-  description = "Skip final snapshot for the DocumentDB cluster"
-  type        = bool
+variable "username" {
+  description = "Master username"
+  type        = string
 }
 
-variable "aws_docdb_storage_encrypted" {
-  description = "Enable storage encryption for the DocumentDB cluster"
-  type        = bool
-}
-
-variable "aws_docdb_backup_retention_period" {
-  description = "Backup retention period for the DocumentDB cluster"
+variable "port" {
+  description = "Database port"
   type        = number
+  default     = 3306
 }
 
-variable "aws_docdb_tls_enabled" {
-  description = "Enable TLS for the DocumentDB cluster"
+variable "iam_database_authentication_enabled" {
+  description = "Enable IAM database authentication"
   type        = bool
+  default     = true
 }
 
-variable "aws_docdb_availability_zones" {
-  description = "Availability zones for the DocumentDB cluster"
+variable "vpc_security_group_ids" {
+  description = "List of VPC security group IDs"
   type        = list(string)
+  default     = []
+}
+
+variable "maintenance_window" {
+  description = "Maintenance window"
+  type        = string
+  default     = "Mon:00:00-Mon:03:00"
+}
+
+variable "backup_window" {
+  description = "Backup window"
+  type        = string
+  default     = "03:00-06:00"
+}
+
+variable "monitoring_interval" {
+  description = "Enhanced Monitoring interval"
+  type        = string
+  default     = "30"
+}
+
+variable "monitoring_role_name" {
+  description = "Monitoring role name"
+  type        = string
+  default     = "RDSMonitoringRole"
+}
+
+variable "create_monitoring_role" {
+  description = "Create monitoring role"
+  type        = bool
+  default     = true
+}
+
+variable "create_db_subnet_group" {
+  description = "Create DB subnet group"
+  type        = bool
+  default     = true
+}
+
+variable "subnet_ids" {
+  description = "List of subnet IDs"
+  type        = list(string)
+  default     = []
+}
+
+variable "family" {
+  description = "DB parameter group family"
+  type        = string
+  default     = "mysql8.0"
+}
+
+variable "major_engine_version" {
+  description = "Major engine version"
+  type        = string
+  default     = "8.0"
+}
+
+variable "deletion_protection" {
+  description = "Enable deletion protection"
+  type        = bool
+  default     = true
+}
+
+variable "parameters" {
+  description = "DB parameters"
+  type = list(object({
+    name  = string
+    value = string
+  }))
+  default = []
+}
+
+variable "options" {
+  description = "DB options"
+  type = list(object({
+    option_name = string
+    option_settings = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+  default = []
 }

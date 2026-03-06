@@ -74,5 +74,6 @@ module "eks" {
     access_entries = var.eks_access_entries
 
     eks_managed_node_groups = var.eks_managed_node_groups
-    tags = local.tags # Adicionando as tags que foram criadas no locals do arquivo main.tf
+    tags = local.tags 
 }
+

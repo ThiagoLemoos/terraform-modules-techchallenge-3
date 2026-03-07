@@ -1,5 +1,5 @@
 locals {
-  azs = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  azs = var.eks_availability_zones
  
   public_subnets  = [for i in range(length(local.azs)) : cidrsubnet(var.cidr_block, 4, i)]
   private_subnets = [for i, az in local.azs : cidrsubnet(var.cidr_block, 4, i + 10)]
@@ -9,19 +9,19 @@ module "eks" {
     source  = "terraform-aws-modules/eks/aws" 
     version = "~> 20.17" 
 
-    cluster_name    = var.cluster_name
-    cluster_version = var.kubernetes_version
+    cluster_name    = var.eks_cluster_name
+    cluster_version = var.eks_kubernetes_version
 
     vpc_id     = module.vpc.vpc_id 
     subnet_ids = module.vpc.private_subnets 
     
 
-    cluster_endpoint_public_access  = false 
-    cluster_endpoint_private_access = true 
+    cluster_endpoint_public_access  = var.eks_cluster_endpoint_public_access 
+    cluster_endpoint_private_access = var.eks_cluster_endpoint_private_access 
   
-    enable_irsa = true 
+    enable_irsa = var.eks_enable_irsa 
 
-    enable_cluster_creator_admin_permissions = true 
+    enable_cluster_creator_admin_permissions = var.eks_enable_cluster_creator_admin_permissions 
 
     cluster_security_group_additional_rules = {
       ingress_vpc_api_443 = {
@@ -68,12 +68,12 @@ module "eks" {
     }
 
     eks_managed_node_group_defaults = {
-      tags = local.tags
+      tags = var.eks_tags
     }
     
     access_entries = var.eks_access_entries
 
     eks_managed_node_groups = var.eks_managed_node_groups
-    tags = local.tags 
+    tags = var.eks_tags 
 }
 

@@ -19,7 +19,7 @@ module "this" {
   public_subnets = local.public_subnets
   private_subnets = local.private_subnets
 
-  create_multiple_public_route_tables  = false
+  create_multiple_public_route_tables  = true
   enable_nat_gateway = true
   create_private_nat_gateway_route = true
   single_nat_gateway = true
@@ -58,4 +58,13 @@ module "this" {
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
   }
 
+  public_route_table_tags = merge(
+    var.tags,
+    { Name = "${var.project_name}-public-rt" }
+  )
+
+  private_route_table_tags = merge(
+    var.tags,
+    { Name = "${var.project_name}-private-rt" }
+  )
 }

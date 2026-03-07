@@ -16,124 +16,130 @@ variable "tags" {
 }
 
 # Variáveis do RDS
-variable "identifier" {
+variable "rds_identifier" {
   description = "RDS instance identifier"
   type        = string
 }
 
-variable "engine" {
+variable "rds_engine" {
   description = "Database engine"
   type        = string
-  default     = "mysql"
+  default     = "postgres"
 }
 
-variable "engine_version" {
+variable "rds_engine_version" {
   description = "Database engine version"
   type        = string
-  default     = "8.0"
+  default     = "15.4"
 }
 
-variable "instance_class" {
+variable "rds_instance_class" {
   description = "RDS instance class"
   type        = string
-  default     = "db.t3a.large"
+  default     = "db.t3.micro"
 }
 
-variable "allocated_storage" {
+variable "rds_allocated_storage" {
   description = "Allocated storage in GB"
   type        = number
   default     = 20
 }
 
-variable "db_name" {
+variable "rds_db_name" {
   description = "Database name"
   type        = string
 }
 
-variable "username" {
+variable "rds_username" {
   description = "Master username"
   type        = string
 }
 
-variable "port" {
+variable "rds_password" {
+  description = "Master password"
+  type        = string
+  sensitive   = true
+}
+
+variable "rds_port" {
   description = "Database port"
   type        = number
-  default     = 3306
+  default     = 5432
 }
 
-variable "iam_database_authentication_enabled" {
+variable "rds_iam_database_authentication_enabled" {
   description = "Enable IAM database authentication"
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "vpc_security_group_ids" {
+variable "rds_vpc_security_group_ids" {
   description = "List of VPC security group IDs"
   type        = list(string)
   default     = []
 }
 
-variable "maintenance_window" {
+variable "rds_maintenance_window" {
   description = "Maintenance window"
   type        = string
-  default     = "Mon:00:00-Mon:03:00"
+  default     = "Sun:02:00-Sun:04:00"
 }
 
-variable "backup_window" {
+variable "rds_backup_window" {
   description = "Backup window"
   type        = string
-  default     = "03:00-06:00"
+  default     = "04:00-06:00"
 }
 
-variable "monitoring_interval" {
+variable "rds_monitoring_interval" {
   description = "Enhanced Monitoring interval"
   type        = string
-  default     = "30"
+  default     = "0"
 }
 
-variable "monitoring_role_name" {
+variable "rds_monitoring_role_name" {
   description = "Monitoring role name"
   type        = string
-  default     = "RDSMonitoringRole"
+  default     = "ToggleMasterRDSMonitoringRole"
 }
 
-variable "create_monitoring_role" {
+variable "rds_create_monitoring_role" {
   description = "Create monitoring role"
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "create_db_subnet_group" {
+variable "rds_create_db_subnet_group" {
   description = "Create DB subnet group"
   type        = bool
   default     = true
 }
 
-variable "subnet_ids" {
+variable "rds_subnet_ids" {
   description = "List of subnet IDs"
   type        = list(string)
   default     = []
 }
 
-variable "family" {
+variable "rds_family" {
   description = "DB parameter group family"
   type        = string
-  default     = "mysql8.0"
+  default     = "postgres15"
 }
 
-variable "major_engine_version" {
+variable "rds_major_engine_version" {
   description = "Major engine version"
   type        = string
-  default     = "8.0"
+  default     = "15"
 }
 
-variable "deletion_protection" {
+variable "rds_deletion_protection" {
   description = "Enable deletion protection"
   type        = bool
-  default     = true
+  default     = false
 }
 
-variable "parameters" {
+variable "rds_parameters" {
   description = "DB parameters"
   type = list(object({
     name  = string
@@ -142,7 +148,7 @@ variable "parameters" {
   default = []
 }
 
-variable "options" {
+variable "rds_options" {
   description = "DB options"
   type = list(object({
     option_name = string

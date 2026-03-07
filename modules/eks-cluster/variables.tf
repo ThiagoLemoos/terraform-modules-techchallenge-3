@@ -28,36 +28,62 @@ variable "tags" {
   }
 }
 
-variable "cluster_name" {
+variable "eks_cluster_name" {
   description = "EKS cluster name"
   type        = string
-  default     = "core-eks"
+  default     = "togglemaster-eks"
 }
 
-
-variable "kubernetes_version" {
+variable "eks_kubernetes_version" {
   description = "Kubernetes version for EKS"
   type        = string
-  default     = "1.34"
+  default     = "1.28"
+}
+
+variable "eks_tags" {
+  type        = map(any)
+  description = "Tags for EKS resources"
+  default     = {}
 }
 
 variable "eks_managed_node_groups" {
   description = "Map of EKS managed node groups configuration"
   type        = any
-  default = {
-    default = {
-      instance_types = ["a1.medium"]
-      min_size       = 1
-      max_size       = 2
-      desired_size   = 1
-      capacity_type  = "ONDEMAND"
-      ami_type       = "AL2_x86_64"
-    }
-  }
+  default = {}
 }
 
 variable "eks_access_entries" {
   description = "Map of IAM principals to grant EKS access"
   type        = any
   default     = {}
+}
+
+variable "eks_availability_zones" {
+  description = "List of availability zones for EKS cluster"
+  type        = list(string)
+  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
+}
+
+variable "eks_cluster_endpoint_public_access" {
+  description = "Enable public access to EKS cluster endpoint"
+  type        = bool
+  default     = false
+}
+
+variable "eks_cluster_endpoint_private_access" {
+  description = "Enable private access to EKS cluster endpoint"
+  type        = bool
+  default     = true
+}
+
+variable "eks_enable_irsa" {
+  description = "Enable IAM Roles for Service Accounts (IRSA)"
+  type        = bool
+  default     = true
+}
+
+variable "eks_enable_cluster_creator_admin_permissions" {
+  description = "Enable cluster creator admin permissions"
+  type        = bool
+  default     = true
 }

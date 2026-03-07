@@ -1,46 +1,48 @@
 module "db" {
   source = "terraform-aws-modules/rds/aws"
+  version = "~> 6.0"
 
-  identifier = var.identifier
+  identifier = var.rds_identifier
 
-  engine            = var.engine
-  engine_version    = var.engine_version
-  instance_class    = var.instance_class
-  allocated_storage = var.allocated_storage
+  engine            = var.rds_engine
+  engine_version    = var.rds_engine_version
+  instance_class    = var.rds_instance_class
+  allocated_storage = var.rds_allocated_storage
 
-  db_name  = var.db_name
-  username = var.username
-  port     = var.port
+  db_name  = var.rds_db_name
+  username = var.rds_username
+  password = var.rds_password
+  port     = var.rds_port
 
-  iam_database_authentication_enabled = var.iam_database_authentication_enabled
+  iam_database_authentication_enabled = var.rds_iam_database_authentication_enabled
 
-  vpc_security_group_ids = var.vpc_security_group_ids
+  vpc_security_group_ids = var.rds_vpc_security_group_ids
 
-  maintenance_window = var.maintenance_window
-  backup_window      = var.backup_window
+  maintenance_window = var.rds_maintenance_window
+  backup_window      = var.rds_backup_window
 
   # Enhanced Monitoring - see example for details on how to create the role
   # by yourself, in case you don't want to create it automatically
-  monitoring_interval    = var.monitoring_interval
-  monitoring_role_name   = var.monitoring_role_name
-  create_monitoring_role = var.create_monitoring_role
+  monitoring_interval    = var.rds_monitoring_interval
+  monitoring_role_name   = var.rds_monitoring_role_name
+  create_monitoring_role = var.rds_create_monitoring_role
 
   tags = var.tags
 
   # DB subnet group
-  create_db_subnet_group = var.create_db_subnet_group
-  subnet_ids             = var.subnet_ids
+  create_db_subnet_group = var.rds_create_db_subnet_group
+  subnet_ids             = var.rds_subnet_ids
 
   # DB parameter group
-  family = var.family
+  family = var.rds_family
 
   # DB option group
-  major_engine_version = var.major_engine_version
+  major_engine_version = var.rds_major_engine_version
 
   # Database Deletion Protection
-  deletion_protection = var.deletion_protection
+  deletion_protection = var.rds_deletion_protection
 
-  parameters = var.parameters
+  parameters = var.rds_parameters
 
-  options = var.options
+  options = var.rds_options
 }

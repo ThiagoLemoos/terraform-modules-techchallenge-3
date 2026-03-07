@@ -1,3 +1,3 @@
-bucket    = "prod-techchallenge-terraform-state-us-east-1"
-key       = "terraform.tfstate"
-region    = "us-east-1"
+bucket = "togglemaster-terraform-state-us-east-1"
+key    = "prod/terraform.tfstate"
+region = "us-east-1"

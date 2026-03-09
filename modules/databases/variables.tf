@@ -15,7 +15,9 @@ variable "tags" {
   default = {}
 }
 
+#=======================
 # Variáveis do RDS
+#=======================
 variable "rds_identifier" {
   description = "RDS instance identifier"
   type        = string

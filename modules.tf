@@ -27,7 +27,11 @@ module "vpc" {
 }
 
 module "ecr" {
+  for_each = toset(var.repository_name)
+
   source = "./modules/ecr"
+
+  repository_name = each.value
 }
 
 module "rds" {
@@ -62,7 +66,7 @@ module "rds" {
 
   # Configurações de subnet
   rds_create_db_subnet_group = var.rds_create_db_subnet_group
-  rds_subnet_ids             = [] # Será preenchido após criação da VPC
+  rds_subnet_ids             = module.vpc.private_subnets
 
   # Configurações de engine
   rds_family               = var.rds_family
@@ -97,6 +101,7 @@ module "eks" {
   tags         = var.eks_tags
 
   # Variáveis EKS
+  eks_enable_irsa = var.eks_enable_irsa
   eks_cluster_name              = var.eks_cluster_name
   eks_kubernetes_version        = var.eks_kubernetes_version
   eks_managed_node_groups       = var.eks_managed_node_groups
@@ -109,4 +114,12 @@ module "eks" {
   
   # Disable IAM session context for AWS Academy
   enable_iam_session_context = var.enable_iam_session_context
+}
+
+module "sqs" {
+  source = "./modules/resources"
+  
+  project_name = var.project_name
+  environment = var.environment
+  tags = var.tags
 }

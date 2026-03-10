@@ -48,9 +48,9 @@ variable "rds_tags" {
 }
 
 variable "repository_name" {
-  type        = string
+  type        = list(string)
   description = "ECR repository name"
-  default     = "togglemaster"
+  default     = ["togglemaster"]
 }
 
 # =============================================================================
@@ -129,6 +129,12 @@ variable "eks_cluster_name" {
   description = "EKS cluster name"
   type        = string
   default     = "togglemaster-eks"
+}
+
+variable "eks_enable_irsa" {
+  description = "Enable IRSA for EKS"
+  type        = bool
+  default     = false
 }
 
 variable "eks_kubernetes_version" {
@@ -373,4 +379,16 @@ variable "backend_region" {
   description = "S3 region for Terraform state"
   type        = string
   default     = "us-east-1"
+}
+
+variable "sqs_queue_name" {
+  description = "SQS queue name"
+  type        = string
+  default     = ""
+}
+
+variable "environment" {
+  description = "Environment name"
+  type        = string
+  default     = ""
 }

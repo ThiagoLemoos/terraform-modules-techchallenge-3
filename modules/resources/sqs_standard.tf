@@ -1,4 +1,4 @@
-module "sqs" {
+module "sqs_standard" {
   #External module - community module for SQS
   source  = "terraform-aws-modules/sqs/aws"
   version = "5.2.1"

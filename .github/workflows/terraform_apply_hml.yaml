@@ -1,8 +1,7 @@
 name: Terraform Apply Homolog
 
 on:
-  push:
-    branches: [ feature/helm_provider ]
+  workflow_dispatch:
 
 env:
   AWS_REGION_HML: us-east-1 

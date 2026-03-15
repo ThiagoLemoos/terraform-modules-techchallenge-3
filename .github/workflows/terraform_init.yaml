@@ -26,6 +26,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
 
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v4
@@ -71,6 +72,9 @@ jobs:
       - name: Plan
         working-directory: ${{ env.WORK_DIR_HML }}
         run: terraform plan -out=tfplan
+        run: |
+          set -x
+          terraform plan -no-color -out=tfplan
 
       #- name: Output
       #  working-directory: ${{ env.WORK_DIR_HML }}

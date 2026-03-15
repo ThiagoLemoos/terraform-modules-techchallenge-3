@@ -6,7 +6,7 @@ locals {
 }
 
 module "vpc" {
-  source = "./modules/network"
+  source = "../../modules/network"
 
   aws_region   = var.aws_region
   project_name = var.project_name
@@ -27,11 +27,11 @@ module "vpc" {
 }
 
 module "ecr" {
-  source = "./modules/ecr"
+  source = "../../modules/ecr"
 }
 
 module "rds" {
-  source       = "./modules/databases"
+  source       = "../../modules/databases"
   project_name = var.project_name
   aws_region   = var.aws_region
   tags         = var.tags
@@ -88,7 +88,7 @@ module "rds" {
 }
 
 module "eks" {
-  source = "./modules/eks-cluster"
+  source = "../../modules/eks-cluster"
 
   # Variáveis principais
   aws_region   = var.aws_region

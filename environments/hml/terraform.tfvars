@@ -99,15 +99,11 @@ rds_major_engine_version = "15"
 # Proteção contra deleção (permitido apenas via Terraform para Academy)
 rds_deletion_protection = false
 
-# Parâmetros otimizados para Academy
+# Parâmetros otimizados para Academy (apenas parâmetros dinâmicos)
 rds_parameters = [
   {
     name  = "max_connections"
     value = "100"
-  },
-  {
-    name  = "shared_buffers"
-    value = "128000"
   },
   {
     name  = "work_mem"
@@ -120,10 +116,6 @@ rds_parameters = [
   {
     name  = "checkpoint_completion_target"
     value = "0.7"
-  },
-  {
-    name  = "wal_buffers"
-    value = "4000"
   },
   {
     name  = "default_statistics_target"

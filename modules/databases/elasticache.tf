@@ -35,7 +35,7 @@ module "elasticache" {
   parameter_group_family = var.elasticache_parameter_group_family
   parameters = [
     {
-      name  = "idle_timeout"
+      name  = "timeout"
       value = 60
     }
   ]

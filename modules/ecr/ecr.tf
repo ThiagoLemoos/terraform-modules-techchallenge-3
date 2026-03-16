@@ -8,7 +8,7 @@ module "ecr" {
 
   repository_name = var.repository_name
 
-  repository_read_write_access_arns = ["arn:aws:iam::012345678901:role/terraform"] # Trocar pelo LabRole
+  repository_read_write_access_arns = ["arn:aws:iam::471112638215:role/terraform"] # Trocar pelo LabRole
   repository_lifecycle_policy = jsonencode({
     rules = [
       {

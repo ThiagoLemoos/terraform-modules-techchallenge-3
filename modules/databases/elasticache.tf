@@ -31,6 +31,7 @@ module "elasticache" {
 
   # Parameter Group
   create_parameter_group = true
+  parameter_group_name = "${var.elasticache_cluster_id}-param-group"
   parameter_group_family = var.elasticache_parameter_group_family
   parameters = [
     {

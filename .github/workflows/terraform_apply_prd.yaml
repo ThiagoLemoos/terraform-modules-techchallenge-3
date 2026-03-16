@@ -1,8 +1,7 @@
 name: Terraform Apply Production
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 env:
   AWS_REGION_PRD: us-east-1
@@ -23,6 +22,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false
 
       - name: Configure AWS
         uses: aws-actions/configure-aws-credentials@v4

@@ -25,3 +25,7 @@ output "tags" {
 output "azs" {
   value = module.this.azs
 }
+
+output "default_security_group_id" {
+  value = module.this.default_security_group_id
+}

@@ -77,7 +77,7 @@ rds_port     = "5432"
 
 # Configurações de segurança para Academy
 rds_iam_database_authentication_enabled = true
-rds_vpc_security_group_ids = []  # Será preenchido automaticamente pelo módulo VPC
+rds_vpc_security_group_ids = []
 
 # Janelas de manutenção (fora do horário de Academy)
 rds_maintenance_window = "Sun:02:00-Sun:04:00"
@@ -90,7 +90,7 @@ rds_create_monitoring_role = false  # Desabilitado para Academy
 
 # Configurações de subnet
 rds_create_db_subnet_group = true
-rds_subnet_ids = []  # Será preenchido automaticamente pelo módulo VPC
+rds_subnet_ids = []
 
 # Configurações de engine PostgreSQL
 rds_family = "postgres15"
@@ -111,7 +111,7 @@ rds_parameters = [
   },
   {
     name  = "work_mem"
-    value = "1MB"
+    value = "1024"
   },
   {
     name  = "maintenance_work_mem"
@@ -196,3 +196,11 @@ global_tags = {
   owner      = "AcademyStudent"
   cost-center = "Education"
 }
+
+# =============================================================================
+# VARIÁVEIS DO MÓDULO DATABASES (ELASTICACHE)
+# =============================================================================
+elasticache_cluster_id = "togglemaster-redis-hml"
+elasticache_replication_group_id = "togglemaster-redis-repl-hml"
+create_elasticache = false
+create_elasticache_replication_group = false

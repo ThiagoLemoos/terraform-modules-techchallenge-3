@@ -1,82 +1,144 @@
+# Creating a Manage Node Group
+resource "aws_eks_cluster" "this" {
+  name     = var.eks_cluster_name
+  role_arn = "arn:aws:iam::057096910794:role/LabRole"
+  version  = var.eks_kubernetes_version
+
+  access_config {
+    authentication_mode = "API_AND_CONFIG_MAP"
+  }
+
+  vpc_config {
+    subnet_ids              = var.private_subnet_ids
+    endpoint_public_access  = var.eks_cluster_endpoint_public_access
+    endpoint_private_access = var.eks_cluster_endpoint_private_access
+  }
+
+  tags = var.tags
+}
+
+# Launch Template para Node Groups - configuração mínima para Academy
+resource "aws_launch_template" "eks_nodes" {
+  for_each = var.eks_managed_node_groups
+
+  name_prefix = "${var.project_name}-${each.key}-"
+  description = "Launch template for ${each.key} node group"
+
+  # Configuração de disco básica para resolver problema de capacidade
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size           = 20  # Mínimo necessário
+      volume_type           = "gp2"  # Mais barato que gp3
+      delete_on_termination = true
+    }
+  }
+
+  # Tags básicas
+  tag_specifications {
+    resource_type = "instance"
+    tags = merge(
+      var.tags,
+      {
+        Name = "${var.project_name}-${each.key}-node"
+      }
+    )
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.project_name}-${each.key}-lt"
+    }
+  )
+}
+
+resource "aws_eks_node_group" "managed" {
+  for_each = var.eks_managed_node_groups
+
+  cluster_name    = aws_eks_cluster.this.name
+  node_group_name = each.key
+  node_role_arn   = "arn:aws:iam::057096910794:role/LabRole"
+
+  subnet_ids = var.private_subnet_ids
+
+  ami_type       = try(each.value.ami_type, null)
+  capacity_type  = try(replace(upper(each.value.capacity_type), "ONDEMAND", "ON_DEMAND"), null)
+  instance_types = try(each.value.instance_types, null)
+
+  labels = try(each.value.k8s_labels, null)
+
+  dynamic "taint" {
+    for_each = try(each.value.taints, [])
+    content {
+      key    = taint.value.key
+      value  = taint.value.value
+      effect = taint.value.effect
+    }
+  }
+
+  scaling_config {
+    desired_size = try(each.value.desired_size, 1)
+    max_size     = try(each.value.max_size, 1)
+    min_size     = try(each.value.min_size, 1)
+  }
+
+  # Usa launch template para configurações avançadas
+  launch_template {
+    id      = aws_launch_template.eks_nodes[each.key].id
+    version = "$Latest"
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.project_name}-${each.key}"
+    }
+  )
+}
+
+resource "aws_eks_access_entry" "this" {
+  for_each = var.eks_access_entries
+
+  cluster_name  = aws_eks_cluster.this.name
+  principal_arn = each.value.principal_arn
+  type          = try(each.value.type, "STANDARD")
+}
+
 locals {
-  azs = var.eks_availability_zones
- 
-  public_subnets  = [for i in range(length(local.azs)) : cidrsubnet(var.cidr_block, 4, i)]
-  private_subnets = [for i, az in local.azs : cidrsubnet(var.cidr_block, 4, i + 10)]
+  eks_access_policy_associations = flatten([
+    for entry_key, entry_val in var.eks_access_entries : [
+      for pol_key, pol_arn in lookup(entry_val, "policy_associations", {}) : {
+        entry_key     = entry_key
+        pol_key       = pol_key
+        principal_arn = entry_val.principal_arn
+        policy_arn    = pol_arn
+      }
+    ]
+  ])
 }
 
-# EKS module is disabled for AWS Academy environments due to IAM restrictions
-# Uncomment the following block when using in a production AWS account with proper IAM permissions
-/*
-module "eks" {
-    source  = "terraform-aws-modules/eks/aws" 
-    version = "~> 20.17" 
+resource "aws_eks_access_policy_association" "this" {
+  for_each = {
+    for v in local.eks_access_policy_associations : "${v.entry_key}_${v.pol_key}" => v
+  }
 
-    cluster_name    = var.eks_cluster_name
-    cluster_version = var.eks_kubernetes_version
+  cluster_name  = aws_eks_cluster.this.name
+  policy_arn    = each.value.policy_arn
+  principal_arn = each.value.principal_arn
 
-    vpc_id     = var.vpc_id 
-    subnet_ids = var.private_subnet_ids 
-    
+  access_scope {
+    type = "cluster"
+  }
 
-    cluster_endpoint_public_access  = var.eks_cluster_endpoint_public_access 
-    cluster_endpoint_private_access = var.eks_cluster_endpoint_private_access 
-  
-    enable_irsa = var.eks_enable_irsa
-
-    enable_cluster_creator_admin_permissions = var.eks_enable_cluster_creator_admin_permissions 
-
-    cluster_security_group_additional_rules = {
-      ingress_vpc_api_443 = {
-        description = "Allow VPC CIDR to access Kubernetes API server"
-        protocol    = "tcp"
-        from_port   = 443
-        to_port     = 443
-        type        = "ingress"
-        cidr_blocks = [var.vpc_cidr_block]
-      }
-    }
-
-    cluster_addons = {
-      vpc-cni = {
-        most_recent              = true
-        resolve_conflicts        = "OVERWRITE"
-        resolve_conflicts_on_create = "OVERWRITE"
-      }
-      coredns = {
-        most_recent              = true
-        resolve_conflicts        = "OVERWRITE"
-        resolve_conflicts_on_create = "OVERWRITE"
-        configuration_values = jsonencode({
-          nodeSelector = {
-            nodepool = "system"
-            workload = "system"
-          }
-          tolerations = [
-            {
-              key = "dedicated"
-              operator = "Equal"
-              value = "system"
-              effect = "NoSchedule"
-            }
-          ]
-        })
-      }
-      kube-proxy = {
-        most_recent              = true
-        resolve_conflicts        = "OVERWRITE"
-        resolve_conflicts_on_create = "OVERWRITE"
-      }
-      
-    }
-
-    eks_managed_node_group_defaults = {
-      tags = var.eks_tags
-    }
-    
-    access_entries = var.eks_access_entries
-
-    eks_managed_node_groups = var.eks_managed_node_groups
-    tags = var.eks_tags 
+  depends_on = [aws_eks_access_entry.this]
 }
-*/
+
+data "aws_security_groups" "nodegroup_sg" {
+  depends_on = [aws_eks_node_group.managed]
+
+  filter {
+    name   = "tag:eks:cluster-name"
+    values = [var.eks_cluster_name]
+  }
+}

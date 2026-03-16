@@ -12,7 +12,7 @@ module "vpc" {
   project_name = var.project_name
   cidr_block   = var.cidr_block
   tags         = var.network_tags
-  cluster_name = var.network_cluster_name
+  cluster_name = var.eks_cluster_name
 
   # Variáveis de otimização de custos
   availability_zones     = var.availability_zones

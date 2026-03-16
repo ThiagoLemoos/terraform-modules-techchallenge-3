@@ -17,6 +17,42 @@ resource "aws_eks_cluster" "this" {
   tags = var.tags
 }
 
+# Launch Template para Node Groups - configuração mínima para Academy
+resource "aws_launch_template" "eks_nodes" {
+  for_each = var.eks_managed_node_groups
+
+  name_prefix = "${var.project_name}-${each.key}-"
+  description = "Launch template for ${each.key} node group"
+
+  # Configuração de disco básica para resolver problema de capacidade
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size           = 20  # Mínimo necessário
+      volume_type           = "gp2"  # Mais barato que gp3
+      delete_on_termination = true
+    }
+  }
+
+  # Tags básicas
+  tag_specifications {
+    resource_type = "instance"
+    tags = merge(
+      var.tags,
+      {
+        Name = "${var.project_name}-${each.key}-node"
+      }
+    )
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.project_name}-${each.key}-lt"
+    }
+  )
+}
+
 resource "aws_eks_node_group" "managed" {
   for_each = var.eks_managed_node_groups
 
@@ -45,6 +81,12 @@ resource "aws_eks_node_group" "managed" {
     desired_size = try(each.value.desired_size, 1)
     max_size     = try(each.value.max_size, 1)
     min_size     = try(each.value.min_size, 1)
+  }
+
+  # Usa launch template para configurações avançadas
+  launch_template {
+    id      = aws_launch_template.eks_nodes[each.key].id
+    version = "$Latest"
   }
 
   tags = merge(

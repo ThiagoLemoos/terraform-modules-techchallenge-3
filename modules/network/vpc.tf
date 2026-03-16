@@ -46,15 +46,21 @@ module "this" {
     { Name = "nat-${var.project_name}" }
   )
 
-  public_subnet_tags = {
-    "kubernetes.io/role/elb"                    = "1"
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-  }
+  public_subnet_tags = merge(
+    {
+      "kubernetes.io/role/elb"                    = "1"
+      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    },
+    var.network_tags
+  )
 
-  private_subnet_tags = {
-    "kubernetes.io/role/internal-elb"           = "1"
-    "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-  }
+  private_subnet_tags = merge(
+    {
+      "kubernetes.io/role/internal-elb"           = "1"
+      "kubernetes.io/cluster/${var.cluster_name}" = "shared"
+    },
+    var.network_tags
+  )
 
   public_route_table_tags = merge(
     var.tags,

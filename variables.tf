@@ -65,7 +65,7 @@ variable "network_tags" {
 variable "network_cluster_name" {
   type        = string
   description = "Cluster name for network module"
-  default     = ""
+  default     = "togglemaster-eks"
 }
 
 variable "availability_zones" {

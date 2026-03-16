@@ -67,7 +67,7 @@ eks_access_entries = {
 # =============================================================================
 rds_identifier = "togglemaster-db-hml"
 rds_engine     = "postgres"
-rds_engine_version = "15.3"
+rds_engine_version = "15"
 rds_instance_class = "db.t3.micro"  # Instância menor para Academy
 rds_allocated_storage = 20
 

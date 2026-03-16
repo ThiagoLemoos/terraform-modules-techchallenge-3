@@ -2,7 +2,7 @@ name: Terraform Apply Homolog
 
 on:
   push:
-    branches: [ feature/helm_provider ]
+    branches: [ main ]
 
 #on:
 #  workflow_dispatch:

@@ -1,11 +1,7 @@
 name: Terraform Apply Production
 
 on:
-  push:
-    branches: [ feature/helm_provider ]
-
-#on:
-#  workflow_dispatch:
+  workflow_dispatch:
 
 env:
   AWS_REGION_PRD: us-east-1

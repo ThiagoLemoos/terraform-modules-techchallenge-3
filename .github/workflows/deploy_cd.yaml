@@ -57,6 +57,14 @@ jobs:
         run: |
           echo "ArgoCD version: $(kubectl get deployment argocd-server -n argocd -o jsonpath='{.spec.template.spec.containers[0].image}')"
 
+      - name: Create Metrics server
+        run: |
+          kubectl apply -f apps/kubernetes/services/metrics.yaml
+
+      - name: Create Ingress NGINX
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.6/deploy/static/provider/cloud/deploy.yaml
+
       - name: Create namespace for Sealed Secrets
         run: |
           kubectl create namespace sealed-secrets --dry-run=client -o yaml | kubectl apply -f -
@@ -110,6 +118,14 @@ jobs:
           kubectl wait --for=condition=Established crd/appprojects.argoproj.io --timeout=60s
           kubectl wait --for=condition=Established crd/applicationsets.argoproj.io --timeout=60s
           kubectl apply --server-side --force-conflicts -k CD/apps/
+
+      - name: Create Metrics server
+        run: |
+          kubectl apply -f apps/kubernetes/services/metrics.yaml
+
+      - name: Create Ingress NGINX
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.6/deploy/static/provider/cloud/deploy.yaml
 
       - name: Verifying ArgoCD
         run: |

@@ -1,4 +1,4 @@
-name: Terraform destroy Production
+name: Terraform destroy HML
 
 on:
   push:
@@ -8,15 +8,15 @@ on:
 #  workflow_dispatch:
 
 env:
-  AWS_REGION_PRD: us-east-1
+  AWS_REGION_HML: us-east-1
   TF_VERSION: 1.6.1
-  WORK_DIR_PRD: environments/prod/
+  WORK_DIR_HML: environments/hml/
 
 jobs:
-  Terraform-destroy-PRD:
-    name: Terraform-destroy-PRD
+  Terraform-destroy-HML:
+    name: Terraform-destroy-HML
     runs-on: ubuntu-latest
-    environment: prod
+    environment: hml
 
     steps:
       - name: Checkout
@@ -34,10 +34,10 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ env.AWS_REGION_PRD }}
+          aws-region: ${{ env.AWS_REGION_HML }}
 
       - name: Changing vars
-        working-directory: ${{ env.WORK_DIR_PRD }}
+        working-directory: ${{ env.WORK_DIR_HML }}
         run: |
           echo "" >> terraform.tfvars
           cat <<EOF >> terraform.tfvars
@@ -45,7 +45,7 @@ jobs:
           EOF
 
       - name: destroy
-        working-directory: ${{ env.WORK_DIR_PRD }}
+        working-directory: ${{ env.WORK_DIR_HML }}
         run: |
           terraform init -reconfigure
           terraform destroy -auto-approve

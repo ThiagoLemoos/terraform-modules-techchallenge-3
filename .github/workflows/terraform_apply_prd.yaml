@@ -49,3 +49,4 @@ jobs:
         run: |
           terraform init -reconfigure
           terraform apply -auto-approve
+#test

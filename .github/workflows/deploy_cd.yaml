@@ -3,9 +3,9 @@ name: Deploying ArgoCD + SealedSecrets
 on:
   workflow_call:
     inputs:
-    environment:
-      required: true
-      type: string
+      environment:
+        required: true
+        type: string
 
 env:
   AWS_REGION: us-east-1

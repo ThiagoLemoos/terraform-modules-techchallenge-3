@@ -72,12 +72,18 @@ jobs:
       - name: Deploying SealedSecret
         run: |
           helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-          helm install sealed-secrets sealed-secrets/sealed-secrets -n sealed-secrets
+          helm repo update
+          kubectl create namespace sealed-secrets --dry-run=client -o yaml | kubectl apply -f -
+          helm upgrade --install sealed-secrets sealed-secrets/sealed-secrets \
+            -n sealed-secrets \
+            --create-namespace \
+            --wait
 
       - name: Verifying SealedSecret
         run: |
-          echo "current sealed-secrets deployment: $(kubectl get deployment sealed-secrets -n sealed-secrets)" \
-          echo "current sealed-secrets secret: $(kubectl get secret -n sealed-secrets)"
+          kubectl get deployment sealed-secrets -n sealed-secrets
+          kubectl get pods -n sealed-secrets
+          kubectl get secret -n sealed-secrets
 
   Deploy-CD-PRD:
     if: ${{ inputs.environment == 'production' }} #Production environment
@@ -138,9 +144,15 @@ jobs:
       - name: Deploying SealedSecret
         run: |
           helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
-          helm install sealed-secrets sealed-secrets/sealed-secrets -n sealed-secrets
+          helm repo update
+          kubectl create namespace sealed-secrets --dry-run=client -o yaml | kubectl apply -f -
+          helm upgrade --install sealed-secrets sealed-secrets/sealed-secrets \
+            -n sealed-secrets \
+            --create-namespace \
+            --wait
 
       - name: Verifying SealedSecret
         run: |
-          echo "current sealed-secrets deployment: $(kubectl get deployment sealed-secrets -n sealed-secrets)" \
-          echo "current sealed-secrets secret: $(kubectl get secret -n sealed-secrets)"
+          kubectl get deployment sealed-secrets -n sealed-secrets
+          kubectl get pods -n sealed-secrets
+          kubectl get secret -n sealed-secrets

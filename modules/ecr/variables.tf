@@ -9,3 +9,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "aws_account_id" {
+  description = "ID da conta AWS"
+  type        = string
+}

@@ -30,6 +30,7 @@ module "ecr" {
   source         = "../../modules/ecr"
   repository_name = var.repository_name
   tags           = var.tags
+  aws_account_id = var.aws_account_id
 }
 
 module "rds" {
@@ -98,6 +99,7 @@ module "eks" {
   project_name = var.project_name
   cidr_block   = var.cidr_block
   tags         = var.eks_tags
+  aws_account_id = var.aws_account_id
 
   # Variáveis EKS
   eks_cluster_name              = var.eks_cluster_name

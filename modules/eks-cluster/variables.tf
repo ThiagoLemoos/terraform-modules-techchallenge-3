@@ -109,3 +109,8 @@ variable "enable_iam_session_context" {
   type        = bool
   default     = false
 }
+
+variable "aws_account_id" {
+  description = "AWS account ID"
+  type        = string
+}

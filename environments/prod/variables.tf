@@ -53,6 +53,11 @@ variable "repository_name" {
   default     = "togglemaster_prod"
 }
 
+variable "aws_account_id" {
+  description = "ID da conta AWS"
+  type        = string
+}
+
 # =============================================================================
 # VARIÁVEIS DO MÓDULO NETWORK (VPC)
 # =============================================================================

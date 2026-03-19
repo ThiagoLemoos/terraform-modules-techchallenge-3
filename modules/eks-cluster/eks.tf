@@ -32,7 +32,7 @@ locals {
 
 resource "aws_eks_cluster" "this" {
   name     = var.eks_cluster_name
-  role_arn = "arn:aws:iam::654654467270:role/LabRole"
+  role_arn = "arn:aws:iam::${var.aws_account_id}:role/LabRole"
   version  = var.eks_kubernetes_version
 
   access_config {
@@ -86,7 +86,7 @@ resource "aws_eks_node_group" "managed" {
 
   cluster_name    = aws_eks_cluster.this.name
   node_group_name = each.key
-  node_role_arn   = "arn:aws:iam::654654467270:role/LabRole"
+  node_role_arn   = "arn:aws:iam::${var.aws_account_id}:role/LabRole"
 
   subnet_ids = var.private_subnet_ids
 

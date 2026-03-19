@@ -11,7 +11,7 @@ module "ecr" {
   #Force deletion of repository containing images
   repository_force_delete = true
 
-  repository_read_write_access_arns = ["arn:aws:iam::654654467270:role/LabRole"] # LabRole para Academy
+  repository_read_write_access_arns = ["arn:aws:iam::${var.aws_account_id}:role/LabRole"] # LabRole para Academy
   repository_lifecycle_policy = jsonencode({
     rules = [
       {

@@ -1,11 +1,11 @@
 name: Terraform destroy HML
 
-on:
-  push:
-    branches: [ feature/helm_provider ]
-
 #on:
-#  workflow_dispatch:
+#  push:
+#    branches: [ feature/helm_provider ]
+
+on:
+  workflow_dispatch:
 
 env:
   AWS_REGION_HML: us-east-1

@@ -121,7 +121,7 @@ jobs:
 
       - name: Create Metrics server
         run: |
-          kubectl apply -f apps/kubernetes/services/metrics.yaml
+          kubectl apply -f kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/high-availability-1.21+.yaml
 
       - name: Create Ingress NGINX
         run: |

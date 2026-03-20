@@ -10,7 +10,7 @@ on:
 env:
   AWS_REGION: us-east-1
   EKS_CLUSTER_NAME_HML: togglemaster-eks-hml
-  EKS_CLUSTER_NAME_PRD: togglemaster-eks-prod
+  EKS_CLUSTER_NAME_PRD: togglemaster-eks
 
 jobs:
   Deploy-CD-HML:

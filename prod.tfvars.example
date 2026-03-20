@@ -4,7 +4,6 @@
 aws_region   = "us-east-1"
 project_name = "togglemaster"
 cidr_block   = "10.0.0.0/16"
-aws_account_id = "654654467270"  # Substituir pelo ID da conta real
 
 # =============================================================================
 # VARIÁVEIS DO MÓDULO NETWORK (VPC)
@@ -12,7 +11,7 @@ aws_account_id = "654654467270"  # Substituir pelo ID da conta real
 network_tags = {
   team       = "DevOps"
   project    = "togglemaster"
-  environment = "Production"
+  environment = "Prod"
   managedBy  = "Terraform"
   Name       = "togglemaster-vpc"
 }
@@ -46,6 +45,7 @@ eks_tags = {
 
 eks_enable_irsa = false
 
+# Configuração dos Node Groups para Produção - Academy
 eks_managed_node_groups = {
   prod_nodes = {
     instance_types = ["t3.medium"]  # Volta para instância mais barata
@@ -64,6 +64,7 @@ eks_managed_node_groups = {
   }
 }
 
+# Configuração de acesso IAM para Produção
 eks_access_entries = {
   prod_admin = {
     principal_arn = "arn:aws:iam::057096910794:role/voclabs"  # Substituir ACCOUNT pelo ID da conta
@@ -86,9 +87,11 @@ rds_db_name  = "togglemaster_prod"
 rds_username = "togglemaster_admin"
 rds_port     = 5432
 
+# Configurações de segurança para Produção
 rds_iam_database_authentication_enabled = true
-rds_vpc_security_group_ids = []
+rds_vpc_security_group_ids = []  # Será preenchido automaticamente pelo módulo VPC
 
+# Janelas de manutenção (fora do horário de pico)
 rds_maintenance_window = "Sun:02:00-Sun:04:00"
 rds_backup_window      = "04:00-06:00"
 
@@ -98,13 +101,15 @@ rds_create_monitoring_role = false
 
 # Configurações de subnet
 rds_create_db_subnet_group = true
-rds_subnet_ids = []
+rds_subnet_ids = []  # Será preenchido automaticamente pelo módulo VPC
 
 # Configurações de engine PostgreSQL
 rds_family = "postgres15"
 rds_major_engine_version = "15"
 
+# Proteção contra deleção (habilitado para produção)
 rds_deletion_protection = false
+
 
 # Parâmetros otimizados para Produção
 rds_parameters = [
@@ -118,7 +123,7 @@ rds_parameters = [
   }
 ]
 
-# Options do PostgreSQL (mínimo para Academy)
+# Options do PostgreSQL para Produção
 rds_options = []
 
 # Tags específicas para RDS
@@ -167,12 +172,17 @@ dynamodb_tables = [
       project    = "togglemaster"
       environment = "Prod"
       managedBy  = "Terraform"
-      Name       = "togglemaster-logs-prod"
+      Name       = "togglemaster-logs"
     }
   }
 ]
 
-dynamodb_table_name = "togglemaster-prd"
+# =============================================================================
+# VARIÁVEIS DE BACKEND S3
+# =============================================================================
+backend_bucket = "terraform-state-techchallenge-equipe7"
+backend_key    = "techchallenge3/terraform.tfstate"
+backend_region = "us-east-1"
 
 # =============================================================================
 # VARIÁVEIS DE TAGS GLOBAIS
@@ -206,7 +216,7 @@ rds_password = "SenhaSegura123!"  # Substituir por senha segura real
 # =============================================================================
 # VARIÁVEIS DO MÓDULO DATABASES (ELASTICACHE)
 # =============================================================================
-elasticache_cluster_id = "togglemaster-redis-prod"
+elasticache_cluster_id = "togglemaster-redis"
 elasticache_replication_group_id = "togglemaster-redis-rg"
 create_elasticache = true
 create_elasticache_replication_group = false

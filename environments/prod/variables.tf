@@ -160,6 +160,12 @@ variable "eks_access_entries" {
   default     = {}
 }
 
+variable "eks_enable_irsa" {
+  description = "Enable IAM Roles for Service Accounts (IRSA)"
+  type        = bool
+  default     = true
+}
+
 # =============================================================================
 # VARIÁVEIS DO MÓDULO DATABASES (RDS)
 # =============================================================================

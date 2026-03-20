@@ -108,6 +108,7 @@ module "eks" {
   eks_kubernetes_version        = var.eks_kubernetes_version
   eks_managed_node_groups       = var.eks_managed_node_groups
   eks_access_entries           = var.eks_access_entries
+  eks_enable_irsa             = var.eks_enable_irsa
   
   # VPC information for EKS
   vpc_id              = module.vpc.vpc_id

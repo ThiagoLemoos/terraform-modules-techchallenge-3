@@ -199,7 +199,13 @@ tags = {
 # =============================================================================
 # VARIÁVEIS DO MÓDULO ECR
 # =============================================================================
-repository_name = ["auth-service", "flag-service", "targeting-service", "evaluation-service", "analytics-service"]
+repository_name = [
+  "auth-service",
+  "flag-service",
+  "targeting-service",
+  "evaluation-service",
+  "analytics-service"
+]
 
 # =============================================================================
 # VARIÁVEIS DO MÓDULO DATABASES (ELASTICACHE)

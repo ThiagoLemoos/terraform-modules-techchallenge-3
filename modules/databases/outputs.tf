@@ -13,3 +13,7 @@ output "dynamodb_table_name" {
   value = module.dynamodb_table.dynamodb_table_id
 }
 
+output "rds_password" {
+  description = "RDS password"
+  value = module.db.password
+}

@@ -129,7 +129,7 @@ module "kubernetes" {
 
   # Database credentials
   db_user     = var.rds_username
-  db_password = var.rds_password
+  db_password = module.rds.rds_password
 
   # Database endpoints
   db_auth_endpoint     = module.rds.rds_instance_endpoint
@@ -138,6 +138,16 @@ module "kubernetes" {
   
   # Other endpoints
   evaluation_db_endpoint = var.elasticache_cluster_id
-  sqs_queue_url         = var.sqs_queue_url
+  sqs_queue_url         = module.resources.sqs_queue_url
   dynamodb_url          = var.dynamodb_table_name
+  rds_password          = module.rds.rds_password
+}
+
+module "resources" {
+  source = "../../modules/resources"
+
+  project_name = var.project_name
+  environment  = "prod"
+  aws_region  = var.aws_region
+  tags        = var.tags
 }

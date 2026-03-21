@@ -50,6 +50,10 @@ variable "dynamodb_url" {
   description = "Dynamodb url"
 }
 
+variable "rds_password" {
+  type        = string
+  description = "Password to RDS Postgres"
+}
 
 
 

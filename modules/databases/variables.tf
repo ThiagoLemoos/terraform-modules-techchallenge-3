@@ -61,6 +61,7 @@ variable "rds_password" {
   description = "Master password"
   type        = string
   sensitive   = true
+  default     = "testedbteste"
 }
 
 variable "rds_port" {

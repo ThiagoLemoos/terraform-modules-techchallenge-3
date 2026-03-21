@@ -390,3 +390,12 @@ variable "backend_region" {
   type        = string
   default     = "us-east-1"
 }
+
+# =============================================================================
+# VARIÁVEIS DO MÓDULO KUBERNETES
+# =============================================================================
+variable "sqs_queue_url" {
+  description = "SQS queue URL for services"
+  type        = string
+  default     = ""
+}

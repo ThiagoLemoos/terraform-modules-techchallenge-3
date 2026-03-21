@@ -118,3 +118,24 @@ module "eks" {
   # Disable IAM session context for AWS Academy
   enable_iam_session_context = var.enable_iam_session_context
 }
+
+module "kubernetes" {
+  source = "../../modules/kubernetes"
+
+  project_name = var.project_name
+  tags         = var.tags
+
+  # Database credentials
+  db_user     = var.rds_username
+  db_password = var.rds_password
+
+  # Database endpoints
+  db_auth_endpoint     = module.rds.rds_instance_endpoint
+  db_flag_endpoint     = module.rds.rds_instance_endpoint
+  db_targeting_endpoint = module.rds.rds_instance_endpoint
+  
+  # Other endpoints
+  evaluation_db_endpoint = var.elasticache_cluster_id
+  sqs_queue_url         = var.sqs_queue_url
+  dynamodb_url          = var.dynamodb_table_name
+}

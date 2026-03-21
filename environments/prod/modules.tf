@@ -28,9 +28,11 @@ module "vpc" {
 
 module "ecr" {
   source         = "../../modules/ecr"
+  for_each       = toset(var.repository_name)
+
   repository_name = each.key
-  tags           = var.tags
-  aws_account_id = var.aws_account_id
+  tags            = var.tags
+  aws_account_id  = var.aws_account_id
 }
 
 module "rds" {

@@ -243,11 +243,6 @@ variable "dynamodb_table_name" {
   type        = string
 }
 
-variable "vpc_id" {
-  description = "VPC ID for RDS security group"
-  type        = string
-}
-
 variable "eks_cluster_security_group_id" {
   description = "EKS cluster security group ID"
   type        = string

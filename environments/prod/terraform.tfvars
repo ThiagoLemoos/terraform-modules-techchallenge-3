@@ -4,7 +4,7 @@
 aws_region   = "us-east-1"
 project_name = "togglemaster"
 cidr_block   = "10.0.0.0/16"
-aws_account_id = "654654467270"  # Substituir pelo ID da conta real
+aws_account_id = "057096910794"  # Substituir pelo ID da conta real
 
 # =============================================================================
 # VARIÁVEIS DO MÓDULO NETWORK (VPC)

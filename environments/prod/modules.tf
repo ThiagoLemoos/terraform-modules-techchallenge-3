@@ -133,6 +133,7 @@ module "kubernetes" {
   # Database credentials
   db_user     = var.rds_username
   db_password = module.rds.rds_password
+  rds_password = module.rds.rds_password
 
   # Database endpoints
   db_auth_endpoint     = module.rds.rds_instance_endpoint
@@ -143,7 +144,6 @@ module "kubernetes" {
   evaluation_db_endpoint = module.rds.elasticache_endpoint
   sqs_queue_url         = module.resources.sqs_queue_url
   dynamodb_url          = var.dynamodb_table_name
-  rds_password          = module.rds.rds_password
 }
 
 module "resources" {

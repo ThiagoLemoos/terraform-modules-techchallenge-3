@@ -49,6 +49,7 @@ module "rds" {
   rds_allocated_storage = var.rds_allocated_storage
   rds_db_name           = var.project_name
   rds_username          = var.rds_username
+  rds_password          = var.rds_password
   rds_port              = var.rds_port
 
   # Configurações de segurança
@@ -132,6 +133,7 @@ module "kubernetes" {
   # Database credentials
   db_user     = var.rds_username
   db_password = module.rds.rds_password
+  rds_password = module.rds.rds_password
 
   # Database endpoints
   db_auth_endpoint     = module.rds.rds_instance_endpoint

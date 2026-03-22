@@ -21,5 +21,5 @@ output "rds_password" {
 
 output "elasticache_endpoint" {
   description = "ElastiCache/Redis endpoint"
-  value       = module.elasticache.cache_endpoint
+  value       = module.elasticache.cache_engine_endpoint_address
 }

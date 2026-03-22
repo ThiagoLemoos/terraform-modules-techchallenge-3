@@ -13,3 +13,13 @@ output "dynamodb_table_name" {
   value = module.dynamodb_table.dynamodb_table_id
 }
 
+output "rds_password" {
+  description = "RDS password"
+  value       = var.rds_password
+  sensitive   = true
+}
+
+output "elasticache_endpoint" {
+  description = "ElastiCache/Redis endpoint"
+  value       = "placeholder-redis-endpoint"
+}

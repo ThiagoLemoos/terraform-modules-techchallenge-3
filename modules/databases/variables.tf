@@ -61,6 +61,7 @@ variable "rds_password" {
   description = "Master password"
   type        = string
   sensitive   = true
+  default     = "testedbteste"
 }
 
 variable "rds_port" {
@@ -239,6 +240,11 @@ variable "elasticache_replication_group_id" {
 
 variable "dynamodb_table_name" {
   description = "DynamoDB table name"
+  type        = string
+}
+
+variable "eks_cluster_security_group_id" {
+  description = "EKS cluster security group ID"
   type        = string
 }
 

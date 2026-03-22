@@ -16,7 +16,10 @@ module "db" {
 
   iam_database_authentication_enabled = var.rds_iam_database_authentication_enabled
 
-  vpc_security_group_ids = var.rds_vpc_security_group_ids
+  vpc_security_group_ids = concat(
+    var.rds_vpc_security_group_ids,
+    [aws_security_group.rds.id]
+  )
 
   maintenance_window = var.rds_maintenance_window
   backup_window      = var.rds_backup_window
@@ -45,4 +48,29 @@ module "db" {
   parameters = var.rds_parameters
 
   options = var.rds_options
+}
+
+# Security group for RDS to allow traffic from EKS cluster
+resource "aws_security_group" "rds" {
+  name_prefix = "${var.rds_identifier}-sg-"
+  description = "Security group for RDS instance"
+  vpc_id      = var.vpc_id
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "${var.rds_identifier}-sg"
+    }
+  )
+}
+
+# Security group rule to allow traffic from EKS cluster
+resource "aws_security_group_rule" "rds_from_eks" {
+  description              = "Allow traffic from EKS cluster"
+  type                     = "ingress"
+  from_port                = var.rds_port
+  to_port                  = var.rds_port
+  protocol                 = "tcp"
+  source_security_group_id = var.eks_cluster_security_group_id
+  security_group_id        = aws_security_group.rds.id
 }

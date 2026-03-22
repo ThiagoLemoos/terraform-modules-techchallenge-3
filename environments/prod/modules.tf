@@ -93,6 +93,9 @@ module "rds" {
   vpc_id              = module.vpc.vpc_id
   vpc_cidr_block      = module.vpc.vpc_cidr_block
   private_subnet_ids   = module.vpc.private_subnets
+  
+  # VPC and EKS information for RDS security group
+  eks_cluster_security_group_id = module.eks.eks_cluster_security_group_id
 }
 
 module "eks" {
@@ -129,7 +132,7 @@ module "kubernetes" {
 
   # Database credentials
   db_user     = var.rds_username
-  db_password = var.rds_password
+  db_password = module.rds.rds_password
 
   # Database endpoints
   db_auth_endpoint     = module.rds.rds_instance_endpoint
@@ -138,6 +141,16 @@ module "kubernetes" {
   
   # Other endpoints
   evaluation_db_endpoint = var.elasticache_cluster_id
-  sqs_queue_url         = var.sqs_queue_url
+  sqs_queue_url         = module.resources.sqs_queue_url
   dynamodb_url          = var.dynamodb_table_name
+  rds_password          = module.rds.rds_password
+}
+
+module "resources" {
+  source = "../../modules/resources"
+
+  project_name = var.project_name
+  environment  = "prod"
+  aws_region  = var.aws_region
+  tags        = var.tags
 }

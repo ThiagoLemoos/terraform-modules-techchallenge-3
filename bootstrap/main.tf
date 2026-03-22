@@ -6,7 +6,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "tfstate" {
-  bucket = "terraform-state-techchallenge-equipe7-teste"
+  bucket = "terraform-state-techchallenge-equipe7"
 }
 
 #-----------------------------

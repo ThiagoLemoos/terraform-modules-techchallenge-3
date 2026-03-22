@@ -19,7 +19,7 @@ output "rds_password" {
   sensitive   = true
 }
 
+
 output "elasticache_endpoint" {
-  description = "ElastiCache/Redis endpoint"
-  value       = module.elasticache.elasticache_endpoint
+  value = module.elasticache.replication_group_primary_endpoint_address
 }

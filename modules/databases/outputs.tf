@@ -21,5 +21,5 @@ output "rds_password" {
 
 output "elasticache_endpoint" {
   description = "ElastiCache/Redis endpoint"
-  value       = module.elasticache.elasticache_endpoint
+  value       = module.elasticache.cluster_endpoint[0]
 }

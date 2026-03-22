@@ -18,3 +18,8 @@ output "rds_password" {
   value       = var.rds_password
   sensitive   = true
 }
+
+output "elasticache_endpoint" {
+  description = "ElastiCache/Redis endpoint"
+  value       = module.elasticache.cache_endpoint
+}

@@ -37,7 +37,7 @@ variable "db_targeting_endpoint" {
 
 variable "evaluation_db_endpoint" {
   type        = string
-  description = "User to Redis"
+  description = "ElastiCache/Redis endpoint"
 }
 
 variable "sqs_queue_url" {

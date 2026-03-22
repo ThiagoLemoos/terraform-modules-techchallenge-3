@@ -140,7 +140,7 @@ module "kubernetes" {
   db_targeting_endpoint = module.rds.rds_instance_endpoint
   
   # Other endpoints
-  evaluation_db_endpoint = var.elasticache_cluster_id
+  evaluation_db_endpoint = module.rds.elasticache_endpoint
   sqs_queue_url         = module.resources.sqs_queue_url
   dynamodb_url          = var.dynamodb_table_name
   rds_password          = module.rds.rds_password

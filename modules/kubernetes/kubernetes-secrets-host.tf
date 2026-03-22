@@ -11,7 +11,7 @@ resource "kubernetes_secret_v1" "auth_db_secret_host" {
   }
 
   data = {
-    DATABASE_URL = "postgres://togglemaster_admin:${var.rds_password}@${var.db_auth_endpoint}:5432/auth_db?sslmode=require"
+    DATABASE_URL = "postgres://togglemaster_admin:${var.rds_password}@${var.db_auth_endpoint}/auth_db?sslmode=require"
   }
 
   type = "Opaque"
@@ -29,7 +29,7 @@ resource "kubernetes_secret_v1" "flag_db_secret_host" {
   }
 
   data = {
-    DATABASE_URL = "postgres://togglemaster_admin:${var.rds_password}@${var.db_auth_endpoint}:5432/flag_db?sslmode=require"
+    DATABASE_URL = "postgres://togglemaster_admin:${var.rds_password}@${var.db_auth_endpoint}/flag_db?sslmode=require"
   }
 
   type = "Opaque"
@@ -47,7 +47,7 @@ resource "kubernetes_secret_v1" "targeting_db_secret_host" {
   }
 
   data = {
-    DATABASE_URL = "postgres://togglemaster_admin:${var.rds_password}@${var.db_targeting_endpoint}:5432/targeting_db?sslmode=require"
+    DATABASE_URL = "postgres://togglemaster_admin:${var.rds_password}@${var.db_targeting_endpoint}/targeting_db?sslmode=require"
   }
 
   type = "Opaque"

@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-databases
+  namespace: default
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: create-dbs
+        image: postgres:15
+        env:
+        - name: PGPASSWORD
+          value: "testedbteste"
+        command: ["sh", "-c"]
+        args:
+        - |
+          echo "Creating databases..."
+          
+          # Conecta ao database postgres (padrão) para criar os outros databases
+          psql -h "togglemaster-db.c1wcg6yasyvp.us-east-1.rds.amazonaws.com" \
+                -p "5432" \
+                -U "togglemaster_admin" \
+                -d "postgres" \
+                -c "CREATE DATABASE auth_db;" || echo "auth_db already exists"
+                
+          psql -h "togglemaster-db.c1wcg6yasyvp.us-east-1.rds.amazonaws.com" \
+                -p "5432" \
+                -U "togglemaster_admin" \
+                -d "postgres" \
+                -c "CREATE DATABASE flag_db;" || echo "flag_db already exists"
+                
+          psql -h "togglemaster-db.c1wcg6yasyvp.us-east-1.rds.amazonaws.com" \
+                -p "5432" \
+                -U "togglemaster_admin" \
+                -d "postgres" \
+                -c "CREATE DATABASE targeting_db;" || echo "targeting_db already exists"
+          
+          echo "Databases created successfully!"
+          echo "Listing databases:"
+          psql -h "togglemaster-db.c1wcg6yasyvp.us-east-1.rds.amazonaws.com" \
+                -p "5432" \
+                -U "togglemaster_admin" \
+                -d "postgres" \
+                -c "\l"

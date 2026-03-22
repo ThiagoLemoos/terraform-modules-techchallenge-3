@@ -93,6 +93,14 @@ jobs:
           kubectl get pods -n sealed-secrets
           kubectl get secret -n sealed-secrets
 
+      - name: Deploying SQL Databases
+        run: |
+          echo "SQL Databases will be deployed here"
+          cd jobs/init_sql/
+          kubectl apply -f configmap.yaml
+          kubectl apply -f create-databases.yaml
+          kubectl apply -f test-job.yaml
+
   Deploy-CD-PRD:
     if: ${{ inputs.environment == 'production' }} #Production environment
     name: Deploy CD PRD
@@ -164,3 +172,11 @@ jobs:
           kubectl get deployment sealed-secrets -n sealed-secrets
           kubectl get pods -n sealed-secrets
           kubectl get secret -n sealed-secrets
+
+      - name: Deploying SQL Databases
+        run: |
+          echo "SQL Databases will be deployed here"
+          cd jobs/init_sql/
+          kubectl apply -f configmap.yaml
+          kubectl apply -f create-databases.yaml
+          kubectl apply -f test-job.yaml

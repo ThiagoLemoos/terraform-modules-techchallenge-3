@@ -1,4 +1,4 @@
-name: Deploying ArgoCD + SealedSecrets
+name: Initialize SQL Databases
 
 on:
   workflow_dispatch:

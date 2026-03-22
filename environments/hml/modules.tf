@@ -131,6 +131,7 @@ module "kubernetes" {
   # Database credentials
   db_user     = var.rds_username
   db_password = module.rds.rds_password
+  rds_password = module.rds.rds_password
 
   # Database endpoints
   db_auth_endpoint     = module.rds.rds_instance_endpoint

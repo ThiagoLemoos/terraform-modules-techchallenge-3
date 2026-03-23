@@ -19,7 +19,6 @@ output "rds_password" {
   sensitive   = true
 }
 
-
 output "elasticache_endpoint" {
   value = module.elasticache.replication_group_primary_endpoint_address
 }

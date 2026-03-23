@@ -8,16 +8,16 @@ on:
 #    branches: [ main ]
 
 env:
-  AWS_REGION_HML: us-east-1
+  AWS_REGION_PROD: us-east-1
   TF_VERSION: 1.6.1
-  WORK_DIR_HML: environments/hml/
-  BUCKET_NAME: teste-lucas-morgani-techchallenge
+  WORK_DIR_PROD: environments/prod/
+  BUCKET_NAME: terraform-state-techchallenge-equipe7-teste
 
 jobs:
   Terraform-Init:
     name: Terraform-Init
     runs-on: ubuntu-latest
-    environment: hml
+    environment: prod
 
     steps:
       - name: Checkout
@@ -35,7 +35,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: ${{ env.AWS_REGION_HML }}
+          aws-region: ${{ env.AWS_REGION_PROD }}
 
       - name: Bootstrap backend if needed
         run: |
@@ -55,15 +55,15 @@ jobs:
           fi
 
       - name: Init
-        working-directory: ${{ env.WORK_DIR_HML }}
+        working-directory: ${{ env.WORK_DIR_PROD }}
         run: terraform init -reconfigure
 
       - name: Validate
-        working-directory: ${{ env.WORK_DIR_HML }}
+        working-directory: ${{ env.WORK_DIR_PROD }}
         run: terraform validate
 
       - name: Changing vars
-        working-directory: ${{ env.WORK_DIR_HML }}
+        working-directory: ${{ env.WORK_DIR_PROD }}
         run: |
           echo "" >> terraform.tfvars
           cat <<EOF >> terraform.tfvars
@@ -71,7 +71,7 @@ jobs:
           EOF
       
       - name: Plan
-        working-directory: ${{ env.WORK_DIR_HML }}
+        working-directory: ${{ env.WORK_DIR_PROD }}
         run: |
           set -x
           terraform plan -no-color -out=tfplan

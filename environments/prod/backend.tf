@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "testeLucasMorgani"
+    bucket = "teste-lucas-morgani-techchallenge"
     key    = "techchallenge3/prod/terraform.tfstate"
     region = "us-east-1"
   }

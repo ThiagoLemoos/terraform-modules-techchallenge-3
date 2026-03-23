@@ -6,11 +6,12 @@ on:
       environment:
         required: true
         type: string
+  workflow_dispatch:
 
 env:
   AWS_REGION: us-east-1
   EKS_CLUSTER_NAME_HML: togglemaster-eks-hml
-  EKS_CLUSTER_NAME_PRD: togglemaster-eks
+  EKS_CLUSTER_NAME_PRD: togglemaster-eks-v2
 
 jobs:
   Deploy-CD-HML:

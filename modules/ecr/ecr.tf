@@ -11,7 +11,7 @@ module "ecr" {
   repository_force_delete         = true
   repository_image_tag_mutability = "MUTABLE"
   repository_read_write_access_arns = [
-    "arn:aws:iam::${var.aws_account_id}:role/voclabs"
+    "arn:aws:iam::${var.aws_account_id}:role/LabRole"
   ]
 
   repository_lifecycle_policy = jsonencode({

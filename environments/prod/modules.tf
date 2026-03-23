@@ -104,26 +104,16 @@ module "eks" {
   # Variáveis principais
   aws_region   = var.aws_region
   project_name = var.project_name
-  cidr_block   = var.cidr_block
-  tags         = var.eks_tags
+  tags         = var.tags
   aws_account_id = var.aws_account_id
 
   # Variáveis EKS
   eks_cluster_name              = var.eks_cluster_name
   eks_kubernetes_version        = var.eks_kubernetes_version
-  eks_managed_node_groups       = var.eks_managed_node_groups
-  eks_access_entries           = var.eks_access_entries
-  eks_enable_irsa             = var.eks_enable_irsa
-  eks_cluster_role_arn        = var.eks_cluster_role_arn
-  eks_node_group_role_arn     = var.eks_node_group_role_arn
   
   # VPC information for EKS
   vpc_id              = module.vpc.vpc_id
   private_subnet_ids   = module.vpc.private_subnets
-  vpc_cidr_block      = module.vpc.vpc_cidr_block
-  
-  # Disable IAM session context for AWS Academy
-  enable_iam_session_context = var.enable_iam_session_context
 }
 
 module "kubernetes" {

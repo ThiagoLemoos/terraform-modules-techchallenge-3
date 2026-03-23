@@ -1,6 +1,6 @@
 terraform {
   backend "s3" {
-    bucket = "terraform-state-techchallenge-equipe7"
+    bucket = "teste-lucas-morgani-techchallenge"
     key    = "techchallenge3/hml/terraform.tfstate"
     region = "us-east-1"
   }

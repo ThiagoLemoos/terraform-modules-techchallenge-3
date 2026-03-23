@@ -66,7 +66,7 @@ eks_managed_node_groups = {
 
 eks_access_entries = {
   hml_admin = {
-    principal_arn = "arn:aws:iam::654654467270:role/voclabs"
+    principal_arn = "arn:aws:iam::654654467270:role/LabRole"
     policy_associations = {
       cluster_admin = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
     }

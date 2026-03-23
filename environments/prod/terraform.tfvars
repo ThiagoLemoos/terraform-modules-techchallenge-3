@@ -33,7 +33,7 @@ enable_ipv6            = false
 # =============================================================================
 # VARIÁVEIS DO MÓDULO EKS-CLUSTER
 # =============================================================================
-eks_cluster_name = "togglemaster-eks"
+eks_cluster_name = "togglemaster-eks-v2"
 eks_kubernetes_version = "1.32"
 
 eks_tags = {
@@ -71,18 +71,12 @@ eks_access_entries = {
       cluster_admin = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
     }
   }
-  voclabs_admin = {
-    principal_arn = "arn:aws:iam::057096910794:role/voclabs"
-    policy_associations = {
-      cluster_admin = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-    }
-  }
 }
 
 # =============================================================================
 # VARIÁVEIS DO MÓDULO DATABASES (RDS)
 # =============================================================================
-rds_identifier = "togglemaster-db"
+rds_identifier = "togglemaster-db-v2"
 rds_engine     = "postgres"
 rds_engine_version = "15"
 rds_instance_class = "db.t3.micro"
@@ -178,7 +172,7 @@ dynamodb_tables = [
   }
 ]
 
-dynamodb_table_name = "togglemaster-prd"
+dynamodb_table_name = "togglemaster-prd-v2"
 
 # =============================================================================
 # VARIÁVEIS DE TAGS GLOBAIS
@@ -203,18 +197,18 @@ tags = {
 # VARIÁVEIS DO MÓDULO ECR
 # =============================================================================
 repository_name = [
-  "auth-service",
-  "flag-service",
-  "targeting-service",
-  "evaluation-service",
-  "analytics-service"
+  "auth-service-v2",
+  "flag-service-v2",
+  "targeting-service-v2",
+  "evaluation-service-v2",
+  "analytics-service-v2"
 ]
 
 # =============================================================================
 # VARIÁVEIS DO MÓDULO DATABASES (ELASTICACHE)
 # =============================================================================
-elasticache_cluster_id = "togglemaster-redis-prod"
-elasticache_replication_group_id = "togglemaster-redis-rg"
+elasticache_cluster_id = "togglemaster-redis-prod-v2"
+elasticache_replication_group_id = "togglemaster-redis-rg-v2"
 create_elasticache = true
 create_elasticache_replication_group = false
 

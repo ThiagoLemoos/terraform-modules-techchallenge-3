@@ -76,7 +76,7 @@ eks_access_entries = {
 # =============================================================================
 # VARIÁVEIS DO MÓDULO DATABASES (RDS)
 # =============================================================================
-rds_identifier = "togglemaster-db"
+rds_identifier = "togglemaster-db-v2"
 rds_engine     = "postgres"
 rds_engine_version = "15"
 rds_instance_class = "db.t3.micro"

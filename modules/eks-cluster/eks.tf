@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 locals {
   current_role_name = element(split("/", data.aws_caller_identity.current.arn), 1)
 
-  current_principal_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.current_role_name}"
+  current_principal_arn = "arn:aws:iam::${var.aws_account_id}:role/LabRole"
 
   effective_eks_access_entries = merge(
     {

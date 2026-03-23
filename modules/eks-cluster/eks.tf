@@ -124,13 +124,13 @@ resource "aws_eks_node_group" "managed" {
   )
 }
 
-resource "aws_eks_access_entry" "this" {
-  for_each = local.effective_eks_access_entries
-
-  cluster_name  = aws_eks_cluster.this.name
-  principal_arn = each.value.principal_arn
-  type          = try(each.value.type, "STANDARD")
-}
+#resource "aws_eks_access_entry" "this" {
+#  for_each = local.effective_eks_access_entries
+#
+#  cluster_name  = aws_eks_cluster.this.name
+#  principal_arn = each.value.principal_arn
+#  type          = try(each.value.type, "STANDARD")
+#}
 
 resource "aws_eks_access_policy_association" "this" {
   for_each = {

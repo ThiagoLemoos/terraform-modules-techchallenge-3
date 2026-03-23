@@ -17,19 +17,15 @@ provider "aws" {
 }
 
 #Kubernetes provider to exec a job
+data "aws_eks_cluster_auth" "cluster_auth" {
+  name = var.eks_cluster_name
+}
+
 provider "kubernetes" { #kubernetes
   host = module.eks.eks_cluster_endpoint
   cluster_ca_certificate = base64decode(
     module.eks.cluster_authentic
   )
 
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    args = [
-      "eks",
-      "get-token",
-      "--cluster-name", var.eks_cluster_name,
-    ]
-  }
+  token = data.aws_eks_cluster_auth.cluster_auth.token
 }

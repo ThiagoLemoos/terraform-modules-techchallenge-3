@@ -1,234 +1,161 @@
-# Terraform Modules Tech Challenge 3
+# Terraform Modules - Tech Challenge 3
 
-Este projeto contém uma infraestrutura completa na AWS provisionada com Terraform, utilizando uma arquitetura modular para provisionar VPC, cluster EKS e banco de dados RDS.
+Infraestrutura AWS provisionada com Terraform usando arquitetura modular, com execução por ambiente (`hml` e `prod`).
 
+Principais componentes:
+- **Network (VPC)**
+- **EKS Cluster + Managed Node Group**
+- **ECR** (repositórios para os serviços)
+- **Databases** (RDS Postgres + DynamoDB + ElastiCache)
+- **SQS** (módulo `resources`)
+- **Kubernetes** (namespaces e secrets)
 
-## 📁 Estrutura do Projeto
+## Estrutura do repositório
 
 ```
 .
-├── backend.tf              # Configuração do backend S3 para estado remoto
-├── providers.tf            # Configuração de providers e versões
-├── variables.tf            # Variáveis de entrada do projeto
-├── modules.tf              # Instanciação dos módulos
-├── outputs.tf              # Saídas do projeto
-├── .gitignore              # Arquivos ignorados pelo Git
-├── environments/           # Configurações por ambiente
-│   ├── dev/               # Ambiente de desenvolvimento
-│   ├── staging/           # Ambiente de staging
-│   └── prod/              # Ambiente de produção
-│       └── prod.hcl       # Configuração do backend para produção
-├── modules/               # Módulos Terraform
-│   ├── network/           # Módulo de rede (VPC)
-│   │   ├── vpc.tf         # Configuração da VPC
-│   │   ├── variables.tf   # Variáveis do módulo
-│   │   └── outputs.tf     # Saídas do módulo
-│   ├── databases/         # Módulo de banco de dados
-│   │   ├── rds.tf         # Configuração RDS
-│   │   ├── variables.tf   # Variáveis do módulo
-│   │   └── outputs.tf     # Saídas do módulo
-│   └── eks-cluster/       # Módulo do cluster EKS
-│       ├── eks.tf         # Configuração do EKS
-│       ├── variables.tf   # Variáveis do módulo
-│       └── outputs.tf     # Saídas do módulo
-└── assets/                # Arquivos estáticos
+├── .github/workflows/                 # Pipelines (GitHub Actions)
+├── bootstrap/                         # Criação do bucket S3 do backend
+│   └── main.tf
+├── environments/
+│   ├── hml/
+│   │   ├── backend.tf                 # Backend S3 (state remoto)
+│   │   ├── providers.tf
+│   │   ├── modules.tf                 # Instancia módulos
+│   │   ├── variables.tf
+│   │   ├── outputs.tf
+│   │   └── terraform.tfvars
+│   └── prod/
+│       ├── backend.tf
+│       ├── providers.tf
+│       ├── modules.tf
+│       ├── variables.tf
+│       ├── outputs.tf
+│       └── terraform.tfvars
+├── modules/
+│   ├── network/                       # VPC/Subnets/NAT/Tags EKS
+│   ├── eks-cluster/                    # EKS + node groups + access entries
+│   ├── ecr/                            # Repositórios ECR (terraform-aws-modules/ecr)
+│   ├── databases/                      # RDS + DynamoDB + ElastiCache
+│   ├── resources/                      # SQS
+│   └── kubernetes/                     # Namespaces e secrets no cluster
+├── jobs/                               # Jobs Kubernetes (ex.: init_sql)
+├── CD/                                 # Manifests/kustomize/ArgoCD
+├── academy.tfvars.example
+└── README.md
 ```
 
-## 🏗️ Arquitetura
+## Backend (state remoto)
 
-### Módulo de Rede (`modules/network`)
-- **VPC**: Cria uma Virtual Private Cloud com CIDR configurável
-- **Subnets**: 
-  - 3 subnets públicas para load balancers
-  - 3 subnets privadas para recursos internos
-- **NAT Gateway**: Gateway NAT para saída de internet das subnets privadas
-- **Internet Gateway**: Gateway de internet para subnets públicas
-- **Route Tables**: Tabelas de roteamento configuradas
-- **Tags Kubernetes**: Subnets marcadas para uso com EKS
+Este projeto usa backend **S3**.
 
-**Recursos provisionados:**
-- VPC principal
-- Internet Gateway
-- NAT Gateway (single)
-- 3 Public Subnets
-- 3 Private Subnets
-- Route Tables associadas
+- **Bucket**: `terraform-state-techchallenge-equipe7`
+- **Keys**:
+  - `techchallenge3/hml/terraform.tfstate`
+  - `techchallenge3/prod/terraform.tfstate`
 
-### Módulo de Banco de Dados (`modules/databases`)
-- **RDS**: Banco de dados MySQL 8.0
-- **Configurações de segurança**: Grupos de segurança e criptografia
-- **Backup e monitoring**: Configurações de backup e monitoring automatizados
+O bucket é criado via `bootstrap/main.tf`.
 
-**Recursos RDS:**
-- Engine: MySQL 8.0
-- Instance: db.t3a.large
-- Storage: 5GB
-- Monitoring habilitado
-- Backup automático
+## Pré-requisitos
 
-### Módulo EKS (`modules/eks-cluster`)
-- **Cluster EKS**: Kubernetes gerenciado pela AWS
-- **Node Groups**: Grupos de nós gerenciados
-- **Addons**: Addons essenciais do Kubernetes
-- **Segurança**: Configurações de segurança e acesso
+- Terraform `>= 1.5.0`
+- AWS CLI v2
+- `kubectl`
+- Acesso à AWS (no caso de AWS Academy, geralmente via role `voclabs`/`LabRole`)
 
-**Recursos provisionados:**
-- Cluster EKS versão 1.34
-- Node groups com instâncias A1
-- Addons: VPC CNI, CoreDNS, kube-proxy
-- IRSA habilitado
-- Endpoint privado apenas
+## Como executar (Windows / PowerShell)
 
-## 🔧 Configuração
+### 1) Criar/garantir o bucket do backend (bootstrap)
 
-### Pré-requisitos
-- Terraform >= 1.5.0
-- AWS CLI configurado
-- Permissões adequadas na AWS
+Execute dentro de `bootstrap/`:
 
-### Variáveis Principais
-
-| Variável | Descrição | Default |
-|----------|-----------|---------|
-| `aws_region` | Região AWS | `us-east-1` |
-| `project_name` | Nome do projeto | `techchallenge` |
-| `cidr_block` | CIDR da VPC | `10.0.0.0/16` |
-| `cluster_name` | Nome do cluster EKS | `core-eks` |
-| `kubernetes_version` | Versão do Kubernetes | `1.34` |
-
-### Tags Padrão
-Todos os recursos são marcados com as seguintes tags:
-```hcl
-{
-  team       = "Devops"
-  project    = "env-techchallenge"
-  environment = "Prod"
-  managedBy  = "Terraform"
-}
-```
-
-## 🚀 Deploy
-
-### 1. Clonar o repositório
-```bash
-git clone <repository-url>
-cd terraform-modules-techchallenge-3
-```
-
-### 2. Configurar variáveis
-Copie e edite o arquivo `terraform.tfvars`:
-```bash
-cp terraform.tfvars.example terraform.tfvars
-# Edite as variáveis conforme necessário
-```
-
-### 3. Inicializar o Terraform
 ```bash
 terraform init
-```
-
-### 4. Planejar o deploy
-```bash
-terraform plan
-```
-
-### 5. Aplicar as mudanças
-```bash
 terraform apply
 ```
 
-## 🌍 Ambientes
+### 2) Inicializar e aplicar um ambiente
 
-O projeto suporta múltiplos ambientes através da pasta `environments/`:
+Exemplo em `environments/prod` (mesma lógica para `hml`):
 
-### Produção
-- Backend S3: `prod-techchallenge-terraform-state-us-east-1`
-- Configuração em `environments/prod/prod.hcl`
+```bash
+terraform init
+terraform apply --var-file=terraform.tfvars
+```
 
-### Desenvolvimento e Staging
-- Estrutura similar ao ambiente de produção
-- Configurações específicas para cada ambiente
+Se você alterou `backend.tf` (bucket/key/region), rode:
 
-## 📊 Saídas
+```bash
+terraform init -reconfigure
+```
 
-O projeto exporta as seguintes saídas principais:
+## Kubernetes / EKS
 
-### Rede
-- `vpc_id`: ID da VPC
-- `vpc_cidr_block`: Bloco CIDR da VPC
-- `public_subnets`: IDs das subnets públicas
-- `private_subnets`: IDs das subnets privadas
+Após o `terraform apply` do ambiente, atualize o `kubeconfig`:
 
-### Banco de Dados
-- `rds_instance_endpoint`: Endpoint da instância RDS
-- `rds_instance_id`: ID da instância RDS
+```bash
+aws eks update-kubeconfig --name <EKS_CLUSTER_NAME> --region us-east-1
+kubectl get nodes
+kubectl get namespaces
+```
 
-## 🔐 Segurança
+Observação: o repositório já usa `eks_access_entries` para conceder acesso ao cluster (incluindo permissões para criação de namespaces, quando aplicável).
 
-### Configurações de Segurança Implementadas:
-- **VPC**: Isolamento de rede com subnets privadas
-- **Security Groups**: Grupos de segurança configurados
-- **IAM**: Roles e políticas de acesso configuradas
-- **Encryption**: Criptografia em repouso e em trânsito
-- **TLS**: TLS habilitado para conexões de banco de dados
-- **Private Endpoints**: Endpoints privados para serviços críticos
+## CI/CD e manifests
 
-### Controle de Acesso:
-- IRSA (IAM Roles for Service Accounts) habilitado
-- Endpoint privado do EKS
-- Grupos de segurança restritivos
+- **GitHub Actions**: confira `.github/workflows/` para os pipelines de `init`/`apply`.
+- **CD/**: contém manifests e/ou estrutura de entrega contínua (ex.: kustomize/Argo CD).
+- **jobs/**: jobs Kubernetes auxiliares (ex.: `init_sql`).
 
-## 📈 Monitoramento
+## Módulos
 
-### Recursos Monitorados:
-- **RDS**: Enhanced Monitoring com intervalo de 30 segundos
-- **EKS**: CloudWatch integration para cluster e nodes
-- **VPC**: VPC Flow Logs (se configurado)
+- **`modules/network`**
+  - VPC, subnets públicas/privadas, NAT Gateway, IGW, rotas e tags para EKS.
+- **`modules/eks-cluster`**
+  - Cluster EKS, launch template, node group e configuração de acesso (EKS Access Entries/Policy Associations).
+- **`modules/ecr`**
+  - Repositórios ECR por serviço (ex.: `auth-service`, `flag-service`, etc.).
+- **`modules/databases`**
+  - RDS (PostgreSQL), DynamoDB e ElastiCache.
+- **`modules/resources`**
+  - SQS (fila principal + DLQ).
+- **`modules/kubernetes`**
+  - Namespaces e secrets no cluster.
 
-## 🔄 Backup e Recuperação
+## Arquitetura (visão geral)
 
-### RDS:
-- Backup window: 03:00-06:00 UTC
-- Retention period configurável
-- Deletion protection habilitado
+```mermaid
+flowchart TB
+  dev[Operador/CI
+  Terraform + AWS CLI + kubectl] --> env[environments/hml ou environments/prod]
 
-## 🛠️ Manutenção
+  env -->|terraform init/apply| tf[Terraform]
 
-### Maintenance Windows:
-- **RDS**: Segunda-feira 00:00-03:00 UTC
-- **EKS**: Updates controlados via versões
+  tf -->|state| s3[(S3 Backend
+  terraform-state-techchallenge-equipe7)]
 
-## 📝 Melhores Práticas
+  tf --> net[modules/network
+  VPC + Subnets + NAT/IGW + Routes]
 
-1. **Versionamento**: Sempre versionar o estado do Terraform
-2. **Planejamento**: Usar `terraform plan` antes de aplicar
-3. **Revisão**: Revisar mudanças em ambiente de staging primeiro
-4. **Segurança**: Nunca commitar arquivos `.tfvars` com dados sensíveis
-5. **Monitoramento**: Monitorar custos e recursos provisionados
+  tf --> eks[modules/eks-cluster
+  EKS Cluster + Node Group
+  EKS Access Entries]
 
-## 🐛 Troubleshooting
+  tf --> ecr[modules/ecr
+  ECR repos por serviço]
 
-### Problemas Comuns:
+  tf --> db[modules/databases]
+  db --> rds[(RDS PostgreSQL)]
+  db --> ddb[(DynamoDB)]
+  db --> redis[(ElastiCache/Redis)]
 
-**Erro de permissão IAM:**
-- Verifique se as credenciais AWS estão configuradas
-- Confirme as permissões necessárias
+  tf --> sqs[modules/resources
+  SQS + DLQ]
 
-**Timeout no deploy:**
-- Verifique limites de recursos na AWS
-- Confirme quotas de serviço
+  tf --> k8s[modules/kubernetes
+  Namespaces + Secrets]
+  k8s -->|usa endpoint/CA/token| eks
 
-**Problemas de rede:**
-- Verifique configurações de VPC e security groups
-- Confirme regras de outbound
-
-## 📞 Suporte
-
-Para suporte ou dúvidas:
-- Team: Devops
-- Project: env-techchallenge
-- Managed by: Terraform
-
----
-
-**Nota**: Este projeto faz parte do Tech Challenge 3 e segue as melhores práticas de Infrastructure as Code (IaC) com Terraform.
+  net --> eks
+  net --> db
+  net --> sqs

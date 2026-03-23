@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 locals {
   current_role_name = element(split("/", data.aws_caller_identity.current.arn), 1)
 
-  current_principal_arn = data.aws_caller_identity.current.arn
+  current_principal_arn = "arn:aws:iam::${var.aws_account_id}:role/LabRole"
 
   effective_eks_access_entries = merge(
     {
@@ -32,7 +32,7 @@ locals {
 
 resource "aws_eks_cluster" "this" {
   name     = var.eks_cluster_name
-  role_arn = data.aws_caller_identity.current.arn
+  role_arn = "arn:aws:iam::${var.aws_account_id}:role/LabRole"
   version  = var.eks_kubernetes_version
 
   access_config {
